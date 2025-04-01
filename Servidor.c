@@ -70,6 +70,9 @@ void *AtenderCliente(void *socket)
 			//Enviamos
 			write(socket_conn, buff2, strlen(buff2));
 
+			if((codigo ==4)
+				sprintf(respuesta,"%d",contador);
+
 			if((codigo ==1)||(codigo ==2))){
 				pthread_mutex_lock(&mutex); //No me interrumpas ahora
 				contador =contador + 1;
