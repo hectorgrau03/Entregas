@@ -107,5 +107,19 @@ namespace WindowsFormsApplication1
             MessageBox.Show("Te has desconectado del servidor");
 
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            //Pedir numero de servicios realizador
+            string mensaje = "4/";
+            byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
+            server.Send(msg);
+
+            //Recibimos la respuesta del servidor
+            byte[] msg2 = new byte[80];
+            server.Receive(msg2);
+            mensaje = Encoding.ASCII.GetString(msg2).Split('\0')[0];
+            label3.Text=mensaje;
+        }
     }
 }

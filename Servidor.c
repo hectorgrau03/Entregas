@@ -7,6 +7,12 @@
 #include <stdio.h>
 #include <pthread.h>
 
+int contador;
+pthread_mutex_t mutex =PTHREAD_MUTEX_INITIALIZER;
+
+int i;
+int sockets[100];
+
 void *AtenderCliente(void *socket)
 {
 	int socket_conn;
@@ -15,6 +21,7 @@ void *AtenderCliente(void *socket)
 	socket_conn = *s;
 	char peticion[512];
 	char buff2[512];
+	int ret;
 	
 	
 	int terminar = 0;
@@ -27,7 +34,7 @@ void *AtenderCliente(void *socket)
 		ret = read(sock_conn, peticion, sizeof(peticion));
 		printf("Recibido\n");
 		
-		//Tenemos que añadirle la marca de fin de string
+		//Tenemos que aï¿½adirle la marca de fin de string
 		//Para que no escriba lo que hay despues en el buffer
 		peticion[ret] = '\0';
 		
@@ -62,6 +69,17 @@ void *AtenderCliente(void *socket)
 			printf("%s\n", buff2);
 			//Enviamos
 			write(socket_conn, buff2, strlen(buff2));
+
+			if((codigo ==1)||(codigo ==2))){
+				pthread_mutex_lock(&mutex); //No me interrumpas ahora
+				contador =contador + 1;
+				pthread_mutex_unlock(&mutex);//Ya puedes interrumpirme
+				//Notificar a todos los clientes conectados
+				char notificacion[20];
+				sprintf(notificacion,"%d",contador);
+				int j;
+				for(j=0,j<i;j++)
+					write(sockets[j],notificacion,strlen(notificacion));
 		}
 	}
 	
